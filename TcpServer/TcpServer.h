@@ -28,9 +28,9 @@ public:
 
     virtual ~TcpServer();
     /*!
-     *  设置监听
+     *  设置监听 即建立socket，设置端口复用，bind(),然后再listen().
      * @param port:端口
-     * @return
+     * @return 返回errno
      */
     int setListen(unsigned short port);
 
@@ -42,6 +42,7 @@ public:
     TcpSocket * acceptConn(int timeout);
 
     /*!
+     * 关闭监听的文件描述符
      *
      */
     void closeFd();
