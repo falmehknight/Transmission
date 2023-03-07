@@ -153,11 +153,19 @@ void TcpSocket::disConnect() {
 }
 
 int TcpSocket::setNonBlock(int fd) {
-    return 0;
+    int flags = fcntl(fd,F_GETFL);
+    if(-1 == flags) return flags;
+    flags |= O_NONBLOCK;
+    int ret = fcntl(fd,F_SETFL,flags);
+    return ret;
 }
 
 int TcpSocket::setBlock(int fd) {
-    return 0;
+    int flags = fcntl(fd,F_GETFL);
+    if(-1 == flags) return flags;
+    flags &= ~O_NONBLOCK;
+    int ret = fcntl(fd,F_SETFL,flags);
+    return ret;
 }
 
 int TcpSocket::readTimeout(unsigned int timeout) {
@@ -217,8 +225,48 @@ int TcpSocket::writeTimeout(unsigned int timeout) {
 }
 
 int TcpSocket::connectTimeout(struct sockaddr_in *addr, unsigned int timeout) {
+    int ret;
+    socklen_t addrLen = sizeof(struct sockaddr_in);
 
-    return 0;
+    if(timeout>0) setNonBlock(m_socket);
+    ret = connect(m_socket,(struct sockaddr*)&addr,addrLen);
+    // 非阻塞连接，返回-1,并且errno为EINPROGRESS，表示连接还在进行中
+    if(ret <0 && errno == EINPROGRESS){
+        fd_set connectFdSet;
+        struct timeval times;
+        FD_ZERO(&connectFdSet);
+        FD_SET(m_socket,&connectFdSet);
+        times.tv_sec = timeout;
+        times.tv_usec = 0;
+        do{
+            ret = select(m_socket+1,nullptr,&connectFdSet, nullptr,&times);
+        }while(ret<0 && errno == EINTR); //遇到中断则继续
+
+        if(ret ==0){
+            // 超时
+            ret = -1;
+            errno = ETIMEDOUT;
+        }
+        else if(ret <0){
+            return -1;
+        }
+        else if(ret == 1){
+            // ret返回为1,可能有两种情况，一种是连接建立成功，一种是套接字错误
+            int err = 0;
+            socklen_t socklen = sizeof(err);
+            int sockOptRet = getsockopt(m_socket,SOL_SOCKET,SO_ERROR,&err,&socklen);
+            if(sockOptRet == -1) return -1;
+            if(err == 0) ret = 0; //success
+            else{
+                errno = err;
+                ret = -1;
+            }
+        }
+
+    }
+    if(timeout > 0) setBlock(m_socket);
+
+    return ret;
 }
 
 int TcpSocket::readn(void *buf, int count) {
