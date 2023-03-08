@@ -7,4 +7,4 @@ include_directories(.)
 
 add_executable(ShareMemory
         BaseShm.cpp
-        BaseShm.h)
+        BaseShm.h SecKeyShm.cpp)
