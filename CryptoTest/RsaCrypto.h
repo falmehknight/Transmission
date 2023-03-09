@@ -34,13 +34,32 @@ public:
      * @param pri 私钥文件名
      */
     void generateRsaKey(int bits,string pub = "public.pem",string pri = "private.pem");
-
+    /*!
+     * 公钥加密
+     * @param data 要加密的数据
+     * @return 加密之后的密文
+     */
     string rsaPubKeyEncrypt(string data);
-
+    /*!
+     * 私钥解密
+     * @param encData  要解密的数据
+     * @return 解密之后的明文
+     */
     string rsaPriKeyDecrypt(string encData);
-
+    /*!
+     * 数字签名
+     * @param data 数据
+     * @param level 使用的hash函数
+     * @return 处理之后的数据
+     */
     string rsaSign(string data,SignLevel level=Level3);
-
+   /*!
+    * 验证数字签名
+    * @param data 原数据
+    * @param signData 签名数据
+    * @param level hash函数
+    * @return 返回验证是否符合
+    */
     bool rasVerify(string data, string signData,SignLevel level = Level3);
 private:
     /*!
@@ -57,8 +76,8 @@ private:
     bool initPrivateKey(string pubFile);
 
 private:
-    RSA* m_publicKey;
-    RSA* m_privateKey;
+    RSA* m_publicKey; //公钥
+    RSA* m_privateKey; //私钥
 };
 
 

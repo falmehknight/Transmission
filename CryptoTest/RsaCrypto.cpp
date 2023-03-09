@@ -56,19 +56,36 @@ void RsaCrypto::generateRsaKey(int bits, string pub, string pri) {
 }
 
 string RsaCrypto::rsaPubKeyEncrypt(string data) {
-    return std::string();
+
+    string encode = "";
+    int ret = RSA_public_encrypt(data.size(), reinterpret_cast<const unsigned char *>(data.data()),
+                                 (unsigned char *) encode.data(), m_publicKey, RSA_PKCS1_PADDING);
+    if(ret<0) return string();
+    return encode;
 }
 
 string RsaCrypto::rsaPriKeyDecrypt(string encData) {
-    return std::string();
+
+    string deCode = "";
+    int ret = RSA_public_encrypt(encData.size(), reinterpret_cast<const unsigned char *>(encData.data()),
+                                 (unsigned char *) deCode.data(), m_privateKey, RSA_PKCS1_PADDING);
+    if(ret<0) return string();
+    return deCode;
 }
 
 string RsaCrypto::rsaSign(string data, SignLevel level) {
-    return std::string();
+    string signData="";
+    unsigned int len;
+    RSA_sign(level, reinterpret_cast<const unsigned char *>(data.data()), data.size(),
+             (unsigned char *) signData.data(), &len, m_privateKey);
+    return signData;
 }
 
 bool RsaCrypto::rasVerify(string data, string signData, SignLevel level) {
-    return false;
+    int ret = RSA_verify(level, (const unsigned char*)data.data(), data.size(),
+                         (const unsigned char*)signData.data(), signData.size(), m_publicKey);
+    if(ret!=1) return false;
+    else return true;
 }
 
 bool RsaCrypto::initPublicKey(string pubFile) {

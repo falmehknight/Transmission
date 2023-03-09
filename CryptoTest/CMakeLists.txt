@@ -7,4 +7,4 @@ include_directories(.)
 
 add_executable(CryptoTest
         Hash.cpp
-        Hash.h RsaCrypto.h RsaCrypto.cpp)
+        Hash.h RsaCrypto.h RsaCrypto.cpp AesCrypto.h AesCrypto.cpp)
