@@ -61,7 +61,7 @@ void TcpServer::closeFd() {
     close(m_lfd);
 }
 
-TcpSocket *TcpServer::acceptConn(int timeout) {
+TcpSocket *TcpServer::acceptConn(int timeout ) {
     int ret;
     if(timeout>0){
         // 上树

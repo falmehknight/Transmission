@@ -39,7 +39,7 @@ public:
      * @param timeout：连接超时时间
      * @return 返回一个已建立连接的socket
      */
-    TcpSocket * acceptConn(int timeout);
+    TcpSocket * acceptConn(int timeout = 1000);
 
     /*!
      * 关闭监听的文件描述符

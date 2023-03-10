@@ -18,7 +18,7 @@ public:
      */
     ServerOp(string json);
     /*!
-     * 服务器开始工作
+     * 服务器开始工作，建立连接的全过程，然后创建子进程完成需要完成的工作
      */
     void startServer();
     /*!
