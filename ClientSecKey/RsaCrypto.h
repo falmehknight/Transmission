@@ -65,6 +65,12 @@ public:
     RSA *getMPublicKey() const;
 
     RSA *getMPrivateKey() const;
+    /*!
+     * 将公钥/私钥字符串数据解析到RSA对象中
+     * @param keyStr 公钥/私钥的字符串
+     * @param pubkey 是否是公钥
+     */
+    void parseKeyString(string keyStr, bool pubkey=true);
 
 private:
     /*!
@@ -78,8 +84,20 @@ private:
      * @param pubFile
      * @return
      */
-    bool initPrivateKey(string pubFile);
-
+    bool initPrivateKey(string priFile);
+    /*!
+     * base64编码，将要传输的二进制数据转换为base64编码
+     * @param str 要传输的二进制数据
+     * @param len 长度
+     * @return
+     */
+    string toBase64(const char* str, int len);
+    /*!
+     * 将base64编码的数据还原
+     * @param str 编码的数据
+     * @return 还原之后的数据
+     */
+    char* fromBase64(string str);
 private:
     RSA* m_publicKey; //公钥
     RSA* m_privateKey; //私钥

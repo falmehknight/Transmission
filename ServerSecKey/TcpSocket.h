@@ -30,22 +30,21 @@ public:
      * @param timeout
      * @return 0成功，其他值均为失败。
      */
-    int connectToHost(string ip,unsigned  short port, int timeout = 1000);
-
+    int connectToHost(string ip,unsigned short port, int timeout = TIMEOUT);
     /*!
      *  发送数据
      * @param data
      * @param timeout
      * @return
      */
-    int sendMsg(string data, int timeout = 1000);
+    int sendMsg(string data, int timeout = TIMEOUT);
 
     /*!
      *  接受数据
      * @param timeout
      * @return
      */
-    string recMsg(int timeout = 1000);
+    string recMsg(int timeout = TIMEOUT);
     /*!
      * 关闭连接
      */

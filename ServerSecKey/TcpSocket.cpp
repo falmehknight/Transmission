@@ -27,7 +27,7 @@ TcpSocket::~TcpSocket() {
 
 int TcpSocket::connectToHost(string ip, unsigned short port, int timeout) {
     int ret = 0;
-    if(port <=0 || port > 65536 || timeout < 0){
+    if(port <=0 || port > 65535 || timeout < 0){
         ret = ParamError;
         return ret;
     }
@@ -38,12 +38,12 @@ int TcpSocket::connectToHost(string ip, unsigned short port, int timeout) {
         return ret;
     }
     struct sockaddr_in servaddr;
-    memset(&servaddr,0,sizeof(sockaddr_in));
+    memset(&servaddr,0,sizeof(servaddr));
     servaddr.sin_family = AF_INET;  //设置为ipv4
     servaddr.sin_port = htons(port);
     servaddr.sin_addr.s_addr = inet_addr(ip.data());
 
-    ret = connectTimeout((struct sockaddr_in*)&servaddr,(unsigned int) timeout);
+    ret = connectTimeout((struct sockaddr_in*)(&servaddr),(unsigned int) timeout);
     if(ret <0){
         if(ret == -1 &&errno == ETIMEDOUT){
             ret = TimeoutError;
@@ -71,12 +71,13 @@ int TcpSocket::sendMsg(string data, int timeout) {
             return ret;
         }
         //转换成网络字节序
-        int netLen = htonl(dataLen);
+        int netLen = htonl(data.size());
         memcpy(netData,&netLen,4);
         memcpy(netData+4,data.data(),data.size());
 
         //没问题的话返回发送的实际字节数，失败返回-1
         hasWrite = writen(netData,dataLen);
+        cout<<"发送了"<<hasWrite<<"的数据"<<endl;
         if(hasWrite < dataLen){ //失败
             if(netData != nullptr){
                 free(netData);
@@ -126,6 +127,7 @@ string TcpSocket::recMsg(int timeout) {
         return string();
     }
     int n = ntohl(netDataLen);
+    n = n;//这里是减去头部的4字节长度
     char * buf = (char*) malloc(n+1);
     if(buf == nullptr){
         ret = MallocError;
@@ -229,7 +231,7 @@ int TcpSocket::connectTimeout(struct sockaddr_in *addr, unsigned int timeout) {
     socklen_t addrLen = sizeof(struct sockaddr_in);
 
     if(timeout>0) setNonBlock(m_socket);
-    ret = connect(m_socket,(struct sockaddr*)&addr,addrLen);
+    ret = connect(m_socket,(struct sockaddr*)addr,addrLen);
     // 非阻塞连接，返回-1,并且errno为EINPROGRESS，表示连接还在进行中
     if(ret <0 && errno == EINPROGRESS){
         fd_set connectFdSet;

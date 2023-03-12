@@ -14,9 +14,9 @@ struct ResponseInfo {
 class ResponseCodec final : public Codec {
 public:
 	ResponseCodec();
-	ResponseCodec(const std::string& encstr);
+	ResponseCodec(const std::string encstr);
 	ResponseCodec(const ResponseInfo* info);
-	void initMessage(const std::string& encstr);
+	void initMessage(const std::string encstr);
 	void initMessage(const ResponseInfo* info);
 	virtual std::string encodeMsg() override;
 	virtual void* decodeMsg() override;

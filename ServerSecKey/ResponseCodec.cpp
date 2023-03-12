@@ -1,24 +1,24 @@
 #include "ResponseCodec.h"
-//Ä¬ÈÏ¹¹Ôì£¬ÊÖ¶¯µ÷ÓÃinitMessage()
+//Ä¬ï¿½Ï¹ï¿½ï¿½ì£¬ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½initMessage()
 ResponseCodec::ResponseCodec() {
 }
 
-//ÓÃÓÚ·´ĞòÁĞ»¯
-ResponseCodec::ResponseCodec(const std::string& encstr) {
+//ï¿½ï¿½ï¿½Ú·ï¿½ï¿½ï¿½ï¿½Ğ»ï¿½
+ResponseCodec::ResponseCodec(const std::string encstr) {
 	initMessage(encstr);
 }
 
-//ÓÃÓÚĞòÁĞ»¯
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ»ï¿½
 ResponseCodec::ResponseCodec(const ResponseInfo* info) {
 	initMessage(info);
 }
 
-//ÓÃÓÚ·´ĞòÁĞ»¯
-void ResponseCodec::initMessage(const std::string& encstr) {
+//ï¿½ï¿½ï¿½Ú·ï¿½ï¿½ï¿½ï¿½Ğ»ï¿½
+void ResponseCodec::initMessage(const std::string encstr) {
 	this->m_encstr = encstr;
 }
 
-//ÓÃÓÚĞòÁĞ»¯
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ»ï¿½
 void ResponseCodec::initMessage(const ResponseInfo* info) {
 	this->m_msg.set_seckeyid(info->seckeyid);
 	this->m_msg.set_clientid(info->clientID);
@@ -27,14 +27,14 @@ void ResponseCodec::initMessage(const ResponseInfo* info) {
 	this->m_msg.set_rv(info->rv);
 }
 
-//½«m_msgÖĞµÄĞÅÏ¢ĞòÁĞ»¯Îªstring²¢·µ»Ø
+//ï¿½ï¿½m_msgï¿½Ğµï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½Ğ»ï¿½Îªstringï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 std::string ResponseCodec::encodeMsg() {
 	std::string output;
 	this->m_msg.SerializeToString(&output);
 	return output;
 }
 
-//½«m_encstrÖĞµÄĞÅÏ¢·´ĞòÁĞ»¯ÎªResponseInfo²¢·µ»ØÆäÖ¸Õë
+//ï¿½ï¿½m_encstrï¿½Ğµï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½Ğ»ï¿½ÎªResponseInfoï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
 void* ResponseCodec::decodeMsg() {
 	this->m_msg.ParseFromString(this->m_encstr);
 
